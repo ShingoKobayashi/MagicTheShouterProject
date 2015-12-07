@@ -1,6 +1,6 @@
 # Magic The Shouter
 
-This project is what was made ​​of OculusGameJam(VRGameJam)2015  in Osaka.
+This project is what was made ​​of OculusGameJam(VRGameJam)2015  in Osaka.  
 This game raises magic using speech recognition.
 
 * SlideShare  
