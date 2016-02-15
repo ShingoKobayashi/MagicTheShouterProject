@@ -20,10 +20,11 @@ public class Test : MonoBehaviour, Magic.MagicListener{
 	void Start () {
 		magic = GetComponent<Magic>();
 		magic.Init(this);
-		InvokeRepeating("RequestMagic", 1, 0.5f);
 	}
 
 	void Update () {
+		RequestMagic();
+
 		LookTo = Player.transform.position - PlayerPivot.transform.position;
 
 		if (Input.GetKeyDown (KeyCode.Alpha1)) {

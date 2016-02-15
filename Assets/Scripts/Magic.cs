@@ -4,7 +4,7 @@ using System;
 using LitJson;
 
 public class Magic : MonoBehaviour {
-	private const string URL_MAGIC = "http://magictheshouter.appspot.com/magic";
+	public Julius_Client julius = null;
 
 	public enum MNo
 	{
@@ -46,33 +46,30 @@ public class Magic : MonoBehaviour {
 		_listener = listener;
 	}
 
-    public void RequestMagic()
+	public void RequestMagic()
 	{
-        Get(URL_MAGIC);
+		StartCoroutine(WaitForRequest());
 	}
 
 	#region private
-	private WWW Get(string url)
+	private IEnumerator WaitForRequest()
 	{
-		var www = new WWW(url);
-		StartCoroutine(WaitForRequest(www));
-		return www;
-	}
-
-	private IEnumerator WaitForRequest(WWW www)
-	{
-		yield return www;
-		
-		if (www.error == null)
+		if (julius != null && !String.IsNullOrEmpty(julius.Result))
 		{
+			var inputText = julius.Result.Trim();
+			Debug.Log("inputText : " + inputText);
 
-			MagicData data = JsonMapper.ToObject<MagicData>(www.text);
-			_listener.CallBack(GetMagicStatus(data.magicno));
+			var magicno = 0;
+			if (int.TryParse(inputText, out magicno))
+			{
+				var status = GetMagicStatus(magicno);
+				Debug.Log("Magic: " + status.No.ToString());
+
+				_listener.CallBack(status);
+			}
 		}
-		else
-		{
-			Debug.Log("WWW Error: " + www.error);
-		}
+
+		yield return null;
 	}
 
 	private Status GetMagicStatus(int magicNo)
@@ -175,14 +172,6 @@ public class Magic : MonoBehaviour {
 	public interface MagicListener
 	{
 		void CallBack(Status magicStatus);
-	}
-
-	[Serializable]
-	public class MagicData
-	{
-		public MagicData() { }
-		public int magicno;
-		public int datetime;
 	}
 
 	public class Status
